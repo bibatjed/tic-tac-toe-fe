@@ -39,22 +39,29 @@ export default function ScoreBoardList() {
     if (bottomRef.current) {
       observer.observe(bottomRef.current);
     }
+
+    return () => {
+      if (bottomRef.current) {
+        observer.unobserve(bottomRef.current);
+      }
+    };
   }, [data.pages, isLoading]);
 
   return (
     <div className="flex mt-2 flex-col gap-4 overflow-y-auto max-h-[400px]">
-      {data.result.length === 0 && (
+      {data.result.length === 0 && !isLoading && (
         <div className="bg-white hover:cursor-pointer flex flex-col justify-center p-5 rounded-lg relative">
           <p className="text-lg font-bold">No previous game</p>
         </div>
       )}
 
-      {data.result.map((value) => {
-        return <ScoreBoardItem {...value} />;
+      {data.result.map((value, index) => {
+        return <ScoreBoardItem key={index} {...value} />;
       })}
-
+      <div className="p-[0.1px]" ref={bottomRef}>
+        {" "}
+      </div>
       {isLoading && <span className="text-md font-bold text-white">Loading...</span>}
-      <div ref={bottomRef}></div>
     </div>
   );
 }
